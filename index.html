@@ -24,6 +24,15 @@
             pointer-events: none;
         }
 
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
         .sticky-note {
             position: absolute;
             width: 90px;
@@ -77,6 +86,7 @@
 </head>
 <body>
     <div id="notes-container" class="background-notes"></div>
+    <canvas id="confetti-canvas" aria-hidden="true"></canvas>
 
     <div class="center-message">
         <h1>Su gimimo diena, <span class="highlight">UGNE!</span></h1>
@@ -96,6 +106,95 @@
             "Laisv\u0117s!"
         ];
         const colors = ["#ffb7b2", "#ffdac1", "#e2f0cb", "#b5ead7", "#c7ceea"];
+        const confettiCanvas = document.getElementById("confetti-canvas");
+        const confettiCtx = confettiCanvas.getContext("2d");
+        const confettiPalette = ["#ff6ea9", "#ffd166", "#7bdff2", "#b8f2a1", "#cdb4ff", "#ffadad"];
+        let confettiPieces = [];
+        let confettiRafId = null;
+
+        function randomBetween(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function resetConfettiPiece(piece, width, height, fromTop = false) {
+            piece.x = randomBetween(0, width);
+            piece.y = fromTop ? randomBetween(-height, 0) : randomBetween(-height, height);
+            piece.w = randomBetween(6, 12);
+            piece.h = randomBetween(8, 16);
+            piece.speedY = randomBetween(1.4, 3.2);
+            piece.drift = randomBetween(-0.9, 0.9);
+            piece.rotation = randomBetween(0, Math.PI * 2);
+            piece.rotationSpeed = randomBetween(-0.08, 0.08);
+            piece.opacity = randomBetween(0.72, 1);
+            piece.color = confettiPalette[Math.floor(Math.random() * confettiPalette.length)];
+            piece.shape = Math.random() > 0.7 ? "circle" : "rect";
+            piece.swing = randomBetween(0.015, 0.045);
+            piece.swingOffset = randomBetween(0, Math.PI * 2);
+        }
+
+        function resizeConfetti() {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            confettiCanvas.width = Math.floor(width * dpr);
+            confettiCanvas.height = Math.floor(height * dpr);
+            confettiCanvas.style.width = `${width}px`;
+            confettiCanvas.style.height = `${height}px`;
+            confettiCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+            const targetCount = width < 600 ? 130 : 180;
+            confettiPieces = Array.from({ length: targetCount }, () => {
+                const piece = {};
+                resetConfettiPiece(piece, width, height, false);
+                return piece;
+            });
+        }
+
+        function startConfetti() {
+            if (confettiRafId !== null) {
+                cancelAnimationFrame(confettiRafId);
+            }
+
+            const drawFrame = () => {
+                const width = window.innerWidth;
+                const height = window.innerHeight;
+
+                confettiCtx.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < confettiPieces.length; i += 1) {
+                    const piece = confettiPieces[i];
+
+                    piece.y += piece.speedY;
+                    piece.x += piece.drift + Math.sin(piece.y * piece.swing + piece.swingOffset) * 0.7;
+                    piece.rotation += piece.rotationSpeed;
+
+                    if (piece.y > height + 24 || piece.x < -30 || piece.x > width + 30) {
+                        resetConfettiPiece(piece, width, height, true);
+                    }
+
+                    confettiCtx.save();
+                    confettiCtx.globalAlpha = piece.opacity;
+                    confettiCtx.translate(piece.x, piece.y);
+                    confettiCtx.rotate(piece.rotation);
+                    confettiCtx.fillStyle = piece.color;
+
+                    if (piece.shape === "circle") {
+                        confettiCtx.beginPath();
+                        confettiCtx.ellipse(0, 0, piece.w * 0.5, piece.h * 0.38, 0, 0, Math.PI * 2);
+                        confettiCtx.fill();
+                    } else {
+                        confettiCtx.fillRect(-piece.w * 0.5, -piece.h * 0.5, piece.w, piece.h);
+                    }
+
+                    confettiCtx.restore();
+                }
+
+                confettiRafId = requestAnimationFrame(drawFrame);
+            };
+
+            confettiRafId = requestAnimationFrame(drawFrame);
+        }
 
         function overlaps(a, b, padding = 0) {
             return !(
@@ -183,10 +282,15 @@
         let resizeTimeout = null;
         window.addEventListener("resize", () => {
             clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(setupNotes, 120);
+            resizeTimeout = setTimeout(() => {
+                setupNotes();
+                resizeConfetti();
+            }, 120);
         });
 
         setupNotes();
+        resizeConfetti();
+        startConfetti();
     </script>
 </body>
 </html>
