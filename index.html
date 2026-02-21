@@ -6,6 +6,7 @@
     <title>Su gimimo diena, Ugne!</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r160/three.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
@@ -67,21 +68,18 @@
             position: fixed;
             left: 0;
             bottom: 8px;
-            width: clamp(130px, 20vw, 180px);
+            width: clamp(150px, 22vw, 220px);
+            aspect-ratio: 22 / 30;
             z-index: 25;
             pointer-events: none;
             will-change: transform;
         }
 
-        #walker svg {
+        #walker-canvas {
             width: 100%;
-            height: auto;
-            overflow: visible;
-            filter: drop-shadow(0 12px 10px rgba(80, 38, 54, 0.22));
-        }
-
-        #walker g {
-            transform-box: fill-box;
+            height: 100%;
+            display: block;
+            filter: drop-shadow(0 12px 10px rgba(80, 38, 54, 0.24));
         }
     </style>
 </head>
@@ -93,76 +91,7 @@
     </div>
 
     <div id="walker" aria-hidden="true">
-        <svg viewBox="0 0 180 230">
-            <defs>
-                <linearGradient id="hairGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#ffe9a9" />
-                    <stop offset="100%" stop-color="#e8be6f" />
-                </linearGradient>
-                <linearGradient id="cardiganGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#ffc0d8" />
-                    <stop offset="100%" stop-color="#ff8eb8" />
-                </linearGradient>
-                <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stop-color="#ffe1cb" />
-                    <stop offset="100%" stop-color="#f7c8a9" />
-                </linearGradient>
-            </defs>
-
-            <ellipse id="shadow" cx="90" cy="216" rx="40" ry="10" fill="rgba(70,40,45,0.28)" />
-
-            <g id="character">
-                <g id="leg-l" transform="translate(74 153)">
-                    <rect x="-9" y="0" width="18" height="42" rx="9" fill="url(#skinGrad)" />
-                    <ellipse cx="0" cy="44" rx="16" ry="8" fill="#6f432f" />
-                </g>
-                <g id="leg-r" transform="translate(106 153)">
-                    <rect x="-9" y="0" width="18" height="42" rx="9" fill="url(#skinGrad)" />
-                    <ellipse cx="0" cy="44" rx="16" ry="8" fill="#6f432f" />
-                </g>
-
-                <g id="torso" transform="translate(90 128)">
-                    <path d="M-34,-14 Q0,-30 34,-14 L30,24 Q0,42 -30,24 Z" fill="url(#cardiganGrad)" />
-                    <path d="M-30,10 Q0,-6 30,10 L26,34 Q0,46 -26,34 Z" fill="#f2e6d7" />
-                    <path d="M-32,24 Q0,48 32,24 L38,46 Q0,72 -38,46 Z" fill="#f4d7bf" />
-
-                    <g id="arm-l" transform="translate(-30 -6)">
-                        <rect x="-10" y="-2" width="16" height="48" rx="8" fill="url(#cardiganGrad)" />
-                        <circle cx="-2" cy="46" r="8" fill="url(#skinGrad)" />
-                    </g>
-                    <g id="arm-r" transform="translate(30 -6)">
-                        <rect x="-6" y="-2" width="16" height="48" rx="8" fill="url(#cardiganGrad)" />
-                        <circle cx="2" cy="46" r="8" fill="url(#skinGrad)" />
-                    </g>
-
-                    <g id="camera" transform="translate(0 18)">
-                        <rect x="-16" y="-9" width="32" height="22" rx="5" fill="#2e3446" />
-                        <circle cx="0" cy="2" r="8" fill="#4a5877" stroke="#dbe7ff" stroke-width="2" />
-                        <rect x="-10" y="-14" width="8" height="5" rx="2" fill="#2e3446" />
-                    </g>
-                </g>
-
-                <g id="head" transform="translate(90 84)">
-                    <g id="hair">
-                        <path d="M-46,5 Q-44,-52 0,-56 Q44,-52 46,5 L40,42 Q0,54 -40,42 Z" fill="url(#hairGrad)" />
-                        <path d="M-28,-24 Q0,-40 28,-24 L32,2 Q0,12 -32,2 Z" fill="#f5d27c" />
-                        <ellipse cx="34" cy="-28" rx="10" ry="7" fill="#fca4cc" />
-                    </g>
-
-                    <circle cx="0" cy="-14" r="33" fill="url(#skinGrad)" />
-                    <circle cx="-13" cy="-16" r="12" fill="none" stroke="#2f3140" stroke-width="3" />
-                    <circle cx="13" cy="-16" r="12" fill="none" stroke="#2f3140" stroke-width="3" />
-                    <line x1="-1" y1="-16" x2="1" y2="-16" stroke="#2f3140" stroke-width="3" />
-                    <circle cx="-13" cy="-15" r="4" fill="#3f6fcf" />
-                    <circle cx="13" cy="-15" r="4" fill="#3f6fcf" />
-                    <circle cx="-11" cy="-17" r="1.2" fill="#ffffff" />
-                    <circle cx="15" cy="-17" r="1.2" fill="#ffffff" />
-                    <path d="M-8,-2 Q0,6 8,-2" fill="none" stroke="#d87090" stroke-width="2.6" stroke-linecap="round" />
-                    <ellipse cx="-22" cy="-5" rx="5" ry="3" fill="#f3a8b8" opacity="0.55" />
-                    <ellipse cx="22" cy="-5" rx="5" ry="3" fill="#f3a8b8" opacity="0.55" />
-                </g>
-            </g>
-        </svg>
+        <canvas id="walker-canvas"></canvas>
     </div>
 
     <script>
@@ -205,41 +134,243 @@
         const walker = document.getElementById("walker");
         let direction = 1;
         let travelTween = null;
+        let threeRig = null;
 
-        function startWalkCycle() {
-            gsap.set("#leg-l", { transformOrigin: "50% 0%" });
-            gsap.set("#leg-r", { transformOrigin: "50% 0%" });
-            gsap.set("#arm-l", { transformOrigin: "50% 12%" });
-            gsap.set("#arm-r", { transformOrigin: "50% 12%" });
-            gsap.set("#head", { transformOrigin: "50% 88%" });
-            gsap.set("#hair", { transformOrigin: "50% 10%" });
+        function setup3DWalker() {
+            const canvas = document.getElementById("walker-canvas");
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+            renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-            const cycle = gsap.timeline({ repeat: -1 });
-            cycle
-                .to("#leg-l", { rotation: 22, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#leg-r", { rotation: -22, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#arm-l", { rotation: -16, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#arm-r", { rotation: 16, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#character", { y: -4, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#head", { rotation: 2, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#hair", { rotation: -2.2, duration: 0.34, ease: "sine.inOut" }, 0)
-                .to("#leg-l", { rotation: -22, duration: 0.34, ease: "sine.inOut" }, 0.34)
-                .to("#leg-r", { rotation: 22, duration: 0.34, ease: "sine.inOut" }, 0.34)
-                .to("#arm-l", { rotation: 16, duration: 0.34, ease: "sine.inOut" }, 0.34)
-                .to("#arm-r", { rotation: -16, duration: 0.34, ease: "sine.inOut" }, 0.34)
-                .to("#character", { y: 0, duration: 0.34, ease: "sine.inOut" }, 0.34)
-                .to("#head", { rotation: -2, duration: 0.34, ease: "sine.inOut" }, 0.34)
-                .to("#hair", { rotation: 2.2, duration: 0.34, ease: "sine.inOut" }, 0.34);
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 30);
+            camera.position.set(0, 1.82, 5.8);
 
-            gsap.to("#shadow", {
-                scaleX: 0.85,
-                opacity: 0.2,
-                duration: 0.34,
-                ease: "sine.inOut",
-                yoyo: true,
-                repeat: -1,
-                transformOrigin: "50% 50%"
-            });
+            const hemiLight = new THREE.HemisphereLight(0xfff4ec, 0xffc6de, 1.12);
+            const keyLight = new THREE.DirectionalLight(0xffffff, 1.35);
+            keyLight.position.set(3.1, 4.8, 3.6);
+            const fillLight = new THREE.DirectionalLight(0xffd2e4, 0.62);
+            fillLight.position.set(-2.4, 2.2, 2.1);
+            scene.add(hemiLight, keyLight, fillLight);
+
+            const matSkin = new THREE.MeshStandardMaterial({ color: 0xffdcc7, roughness: 0.45, metalness: 0.03 });
+            const matHair = new THREE.MeshStandardMaterial({ color: 0xf4ca78, roughness: 0.52, metalness: 0.04 });
+            const matCardigan = new THREE.MeshStandardMaterial({ color: 0xff97bf, roughness: 0.58, metalness: 0.02 });
+            const matSkirt = new THREE.MeshStandardMaterial({ color: 0xf7e5d2, roughness: 0.68, metalness: 0.01 });
+            const matDark = new THREE.MeshStandardMaterial({ color: 0x2a2e44, roughness: 0.43, metalness: 0.08 });
+            const matEye = new THREE.MeshStandardMaterial({ color: 0x4f78d8, roughness: 0.25, metalness: 0.08 });
+            const matShoe = new THREE.MeshStandardMaterial({ color: 0x704833, roughness: 0.57, metalness: 0.06 });
+
+            const avatar = new THREE.Group();
+            avatar.rotation.y = -0.12;
+            scene.add(avatar);
+
+            const torsoCore = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.38, 1.0, 24), matCardigan);
+            torsoCore.position.set(0, 1.56, 0);
+            torsoCore.scale.z = 0.72;
+            avatar.add(torsoCore);
+
+            const chest = new THREE.Mesh(new THREE.SphereGeometry(0.36, 24, 18), matCardigan);
+            chest.position.set(0, 1.93, 0);
+            chest.scale.set(1.05, 0.78, 0.72);
+            avatar.add(chest);
+
+            const blouse = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.3, 0.58, 20), matSkirt);
+            blouse.position.set(0, 1.54, 0.28);
+            blouse.scale.z = 0.42;
+            avatar.add(blouse);
+
+            const skirt = new THREE.Mesh(new THREE.ConeGeometry(0.47, 0.62, 28), matSkirt);
+            skirt.position.set(0, 1.0, 0);
+            avatar.add(skirt);
+
+            const matSock = new THREE.MeshStandardMaterial({ color: 0xfaf4f0, roughness: 0.72, metalness: 0 });
+            const legLPivot = new THREE.Group();
+            legLPivot.position.set(-0.19, 0.98, 0);
+            const legRPivot = new THREE.Group();
+            legRPivot.position.set(0.19, 0.98, 0);
+            avatar.add(legLPivot, legRPivot);
+
+            function createLeg() {
+                const leg = new THREE.Group();
+                const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.105, 0.1, 1.06, 16), matSkin);
+                shin.position.y = -0.53;
+                const sock = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.115, 0.18, 14), matSock);
+                sock.position.y = -1.02;
+                const shoe = new THREE.Mesh(new THREE.SphereGeometry(0.2, 18, 14), matShoe);
+                shoe.position.set(0, -1.14, 0.14);
+                shoe.scale.set(1.15, 0.72, 1.65);
+                leg.add(shin, sock, shoe);
+                return leg;
+            }
+
+            legLPivot.add(createLeg());
+            legRPivot.add(createLeg());
+
+            const armLPivot = new THREE.Group();
+            armLPivot.position.set(-0.44, 1.96, 0.06);
+            const armRPivot = new THREE.Group();
+            armRPivot.position.set(0.44, 1.96, 0.06);
+            avatar.add(armLPivot, armRPivot);
+
+            function createArm() {
+                const arm = new THREE.Group();
+                const upper = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.085, 0.86, 16), matCardigan);
+                upper.position.y = -0.43;
+                const hand = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 12), matSkin);
+                hand.position.y = -0.87;
+                arm.add(upper, hand);
+                return arm;
+            }
+
+            armLPivot.add(createArm());
+            armRPivot.add(createArm());
+
+            const headPivot = new THREE.Group();
+            headPivot.position.set(0, 2.64, 0.07);
+            avatar.add(headPivot);
+
+            const head = new THREE.Mesh(new THREE.SphereGeometry(0.5, 34, 28), matSkin);
+            headPivot.add(head);
+
+            const hairBack = new THREE.Mesh(new THREE.SphereGeometry(0.56, 32, 24), matHair);
+            hairBack.position.set(0, -0.2, -0.06);
+            hairBack.scale.set(1.08, 1.45, 1.08);
+            headPivot.add(hairBack);
+
+            const bangs = new THREE.Mesh(new THREE.SphereGeometry(0.43, 26, 20), matHair);
+            bangs.position.set(0, 0.13, 0.31);
+            bangs.scale.set(1.05, 0.62, 0.42);
+            headPivot.add(bangs);
+
+            const lockL = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.06, 0.9, 12), matHair);
+            lockL.position.set(-0.42, -0.58, 0.18);
+            lockL.rotation.z = 0.12;
+            const lockR = lockL.clone();
+            lockR.position.x = 0.42;
+            lockR.rotation.z = -0.12;
+            headPivot.add(lockL, lockR);
+
+            const bow = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 12), matCardigan);
+            bow.position.set(0.34, 0.1, -0.22);
+            bow.scale.set(1.7, 0.72, 1);
+            headPivot.add(bow);
+
+            const eyeGeo = new THREE.SphereGeometry(0.064, 14, 12);
+            const eyeL = new THREE.Mesh(eyeGeo, matEye);
+            eyeL.position.set(-0.145, 0.02, 0.45);
+            const eyeR = new THREE.Mesh(eyeGeo, matEye);
+            eyeR.position.set(0.145, 0.02, 0.45);
+            const glintMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.2, metalness: 0 });
+            const eyeGlintL = new THREE.Mesh(new THREE.SphereGeometry(0.018, 10, 8), glintMat);
+            eyeGlintL.position.set(-0.126, 0.055, 0.5);
+            const eyeGlintR = eyeGlintL.clone();
+            eyeGlintR.position.x = 0.16;
+            headPivot.add(eyeL, eyeR, eyeGlintL, eyeGlintR);
+
+            const mouth = new THREE.Mesh(new THREE.TorusGeometry(0.06, 0.009, 8, 20, Math.PI), new THREE.MeshStandardMaterial({
+                color: 0xe07b98,
+                roughness: 0.48,
+                metalness: 0
+            }));
+            mouth.rotation.z = Math.PI;
+            mouth.position.set(0, -0.13, 0.46);
+            headPivot.add(mouth);
+
+            const glassesMat = new THREE.MeshStandardMaterial({ color: 0x262b41, roughness: 0.36, metalness: 0.2 });
+            const frameL = new THREE.Mesh(new THREE.TorusGeometry(0.118, 0.012, 12, 28), glassesMat);
+            frameL.position.set(-0.145, 0.02, 0.49);
+            const frameR = frameL.clone();
+            frameR.position.x = 0.145;
+            const bridge = new THREE.Mesh(new THREE.BoxGeometry(0.065, 0.012, 0.012), glassesMat);
+            bridge.position.set(0, 0.02, 0.49);
+            headPivot.add(frameL, frameR, bridge);
+
+            const blushMat = new THREE.MeshStandardMaterial({ color: 0xf4abc0, roughness: 0.7, metalness: 0 });
+            const blushL = new THREE.Mesh(new THREE.SphereGeometry(0.045, 12, 10), blushMat);
+            blushL.position.set(-0.245, -0.09, 0.44);
+            blushL.scale.set(1.35, 0.65, 0.5);
+            const blushR = blushL.clone();
+            blushR.position.x = 0.245;
+            headPivot.add(blushL, blushR);
+
+            const matBag = new THREE.MeshStandardMaterial({ color: 0x9f633f, roughness: 0.6, metalness: 0.08 });
+            const strap = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.025, 1.55, 12), matBag);
+            strap.position.set(-0.02, 1.46, 0.28);
+            strap.rotation.z = -0.74;
+            strap.rotation.y = 0.18;
+            avatar.add(strap);
+
+            const bag = new THREE.Mesh(new THREE.BoxGeometry(0.52, 0.42, 0.26), matBag);
+            bag.position.set(0.56, 0.95, 0.3);
+            avatar.add(bag);
+
+            const bagFlap = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.22, 0.12), new THREE.MeshStandardMaterial({
+                color: 0xb47a55,
+                roughness: 0.62,
+                metalness: 0.06
+            }));
+            bagFlap.position.set(0.56, 1.04, 0.38);
+            avatar.add(bagFlap);
+
+            const cameraRig = new THREE.Group();
+            cameraRig.position.set(0, 1.56, 0.5);
+            avatar.add(cameraRig);
+            const cameraBody = new THREE.Mesh(new THREE.BoxGeometry(0.45, 0.3, 0.25), matDark);
+            const lens = new THREE.Mesh(new THREE.CylinderGeometry(0.082, 0.1, 0.14, 18), new THREE.MeshStandardMaterial({
+                color: 0x4f628f,
+                roughness: 0.2,
+                metalness: 0.35
+            }));
+            lens.rotation.x = Math.PI / 2;
+            lens.position.z = 0.17;
+            cameraRig.add(cameraBody, lens);
+
+            const groundShadow = new THREE.Mesh(
+                new THREE.CircleGeometry(0.8, 32),
+                new THREE.MeshBasicMaterial({ color: 0x4e2f39, transparent: true, opacity: 0.2 })
+            );
+            groundShadow.rotation.x = -Math.PI / 2;
+            groundShadow.position.set(0, -0.12, 0);
+            avatar.add(groundShadow);
+
+            function resizeCanvas() {
+                const width = Math.max(160, walker.clientWidth);
+                const height = Math.max(200, walker.clientHeight);
+                renderer.setSize(width, height, false);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+            }
+
+            resizeCanvas();
+
+            let lastTime = performance.now();
+            let phase = 0;
+            function render(now) {
+                const delta = Math.min((now - lastTime) / 1000, 0.05);
+                lastTime = now;
+                phase += delta * 6.1;
+                const swing = Math.sin(phase);
+                const sway = Math.sin(phase * 0.5);
+
+                legLPivot.rotation.x = swing * 0.43;
+                legRPivot.rotation.x = -swing * 0.43;
+                armLPivot.rotation.x = -1.05 - swing * 0.08;
+                armRPivot.rotation.x = -1.05 + swing * 0.08;
+                armLPivot.rotation.z = 0.35 + sway * 0.03;
+                armRPivot.rotation.z = -0.35 - sway * 0.03;
+                headPivot.rotation.z = sway * 0.03;
+                hairBack.rotation.x = 0.09 - swing * 0.04;
+                avatar.position.y = Math.sin(phase * 2) * 0.03;
+                cameraRig.position.y = 1.56 + Math.sin(phase * 2 + 0.65) * 0.016;
+                groundShadow.scale.setScalar(0.94 - Math.sin(phase * 2) * 0.045);
+
+                renderer.render(scene, camera);
+                requestAnimationFrame(render);
+            }
+
+            requestAnimationFrame(render);
+            threeRig = { resize: resizeCanvas };
         }
 
         function walkAcrossPage() {
@@ -251,7 +382,7 @@
             const startX = direction === 1 ? -characterWidth - margin : width + margin;
             const endX = direction === 1 ? width + margin : -characterWidth - margin;
             const distance = Math.abs(endX - startX);
-            const speed = 120;
+            const speed = 105;
             const duration = Math.max(6, distance / speed);
 
             gsap.set(walker, {
@@ -271,9 +402,12 @@
         }
 
         setupNotes();
-        startWalkCycle();
+        setup3DWalker();
         walkAcrossPage();
-        window.addEventListener("resize", walkAcrossPage);
+        window.addEventListener("resize", () => {
+            if (threeRig) threeRig.resize();
+            walkAcrossPage();
+        });
     </script>
 </body>
 </html>
