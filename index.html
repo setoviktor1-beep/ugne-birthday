@@ -4,230 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Su gimimo diena, Ugne!</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { height: 100%; width: 100%; overflow: hidden; background-color: #fff5f8; font-family: 'Montserrat', sans-serif; }
+        
+        .background-notes { position: absolute; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .sticky-note { 
+            position: absolute; width: 90px; height: 90px; padding: 10px; 
+            font-family: 'Permanent Marker', cursive; font-size: 0.8rem;
+            display: flex; justify-content: center; align-items: center; text-align: center;
+            box-shadow: 3px 3px 8px rgba(0,0,0,0.15); border-bottom-right-radius: 20px 5px;
         }
 
-        body, html {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            font-family: 'Montserrat', sans-serif;
-            background-color: #fff5f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Foniniai lapeliai - išdėstyti aplink centrą */
-        .background-notes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            padding: 10px;
-            pointer-events: none; /* Kad netrukdytų */
-        }
-
-        .sticky-note {
-            position: absolute;
-            width: 90px;
-            height: 90px;
-            padding: 10px;
-            font-family: 'Permanent Marker', cursive;
-            font-size: 0.8rem;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            box-shadow: 3px 3px 8px rgba(0,0,0,0.15);
-            background-color: #fff;
-            border-bottom-right-radius: 20px 5px;
-            animation: noteFloat 4s ease-in-out infinite alternate;
-        }
-
-        @keyframes noteFloat {
-            0% { transform: translateY(0) rotate(-3deg); }
-            100% { transform: translateY(-5px) rotate(3deg); }
-        }
-
-        /* Centrinė žinutė */
         .center-message {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 25px 20px;
-            border-radius: 30px;
-            box-shadow: 0 15px 40px rgba(255, 126, 185, 0.3);
-            width: 85%;
-            max-width: 350px;
-            border: 4px solid #ff7eb9;
-            animation: mainFloat 3s ease-in-out infinite;
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+            z-index: 10; text-align: center; background: rgba(255, 255, 255, 0.95);
+            padding: 25px; border-radius: 30px; border: 4px solid #ff7eb9;
+            width: 85%; max-width: 350px;
         }
 
-        @keyframes mainFloat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        .highlight { color: #ff4081; display: block; font-size: 3rem; margin-top: 5px; }
+
+        /* Charakterio konteineris */
+        #character-container {
+            position: absolute; width: 120px; height: 160px; z-index: 25;
+            transform-origin: bottom center; will-change: transform, left, top;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            color: #333;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-            line-height: 1.2;
-        }
-
-        .highlight {
-            color: #ff4081;
-            display: block;
-            font-size: 3rem;
-            margin-top: 5px;
-            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
-        }
-
-        /* Anime mergaitė (tikras vaizdas) */
-        .anime-girl {
-            position: absolute;
-            width: 180px; /* Padidinau, kad matytųsi detalės */
-            height: auto;
-            z-index: 25;
-            pointer-events: none;
-            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.3));
-        }
-
-        /* Konfeti */
-        .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            z-index: 5;
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(100vh) rotate(720deg); }
-        }
+        svg { width: 100%; height: 100%; overflow: visible; }
+        
+        /* Skeletal Rig - Pivot Points */
+        .arm-left, .arm-right { transform-origin: 50% 10%; }
+        .leg-left, .leg-right { transform-origin: 50% 10%; }
+        .head { transform-origin: 50% 90%; }
     </style>
 </head>
 <body>
 
     <div id="notes-container" class="background-notes"></div>
-
     <div class="center-message">
         <h1>Su gimimo diena, <span class="highlight">UGNE!</span></h1>
     </div>
 
-    <!-- Tikras paveikslėlis -->
-    <img src="girl.png" id="girl" class="anime-girl" alt="Anime Girl">
+    <div id="character-container">
+        <svg viewBox="0 0 100 140">
+            <!-- Kojos -->
+            <g class="leg-left" transform="translate(42, 100)">
+                <rect x="-4" y="0" width="8" height="25" fill="#fbd38d" rx="4" />
+                <rect x="-6" y="20" width="12" height="7" fill="#744210" rx="3" />
+            </g>
+            <g class="leg-right" transform="translate(58, 100)">
+                <rect x="-4" y="0" width="8" height="25" fill="#fbd38d" rx="4" />
+                <rect x="-6" y="20" width="12" height="7" fill="#744210" rx="3" />
+            </g>
+            
+            <!-- Sijonas -->
+            <path d="M35,90 L65,90 L75,105 L25,105 Z" fill="#e2e8f0" />
+            
+            <!-- Torso (Humanoid Rig Main) -->
+            <g class="torso">
+                <rect x="35" y="65" width="30" height="28" fill="#ff7eb9" rx="6" />
+                
+                <!-- Rankos -->
+                <g class="arm-left" transform="translate(35, 70)">
+                    <rect x="-10" y="0" width="10" height="25" fill="#ff7eb9" rx="5" />
+                    <circle cx="-5" cy="25" r="4" fill="#fbd38d" />
+                </g>
+                <g class="arm-right" transform="translate(65, 70)">
+                    <rect x="0" y="0" width="10" height="25" fill="#ff7eb9" rx="5" />
+                    <circle cx="5" cy="25" r="4" fill="#fbd38d" />
+                </g>
+
+                <!-- Fotoaparatas (rankose) -->
+                <g class="camera" transform="translate(42, 80)">
+                    <rect x="0" y="0" width="16" height="12" fill="#2d3748" rx="2" />
+                    <circle cx="8" cy="6" r="3" fill="#4a5568" stroke="white" stroke-width="0.5" />
+                </g>
+            </g>
+
+            <!-- Galva -->
+            <g class="head" transform="translate(50, 65)">
+                <!-- Plaukai galas -->
+                <path d="M-40,0 Q-40,-55 0,-55 Q40,-55 40,0 L45,30 Q30,35 20,20 L-20,20 Q-30,35 -45,30 Z" fill="#f6e05e" />
+                <!-- Veidas -->
+                <circle cx="0" cy="-20" r="30" fill="#fbd38d" />
+                <!-- Plaukai priekis -->
+                <path d="M-30,-20 Q-30,-50 0,-50 Q30,-50 30,-20 L35,0 Q0,5 -35,0 Z" fill="#f6e05e" />
+                <path d="M25,-40 Q35,-40 35,-30" fill="none" stroke="#ff7eb9" stroke-width="4" /> <!-- Kaspinas -->
+                
+                <!-- Akiniai -->
+                <circle cx="-15" cy="-18" r="12" fill="none" stroke="#2d3748" stroke-width="2.5" />
+                <circle cx="15" cy="-18" r="12" fill="none" stroke="#2d3748" stroke-width="2.5" />
+                <line x1="-3" y1="-18" x2="3" y2="-18" stroke="#2d3748" stroke-width="2" />
+                
+                <!-- Akys -->
+                <circle cx="-15" cy="-18" r="4" fill="#3182ce" />
+                <circle cx="15" cy="-18" r="4" fill="#3182ce" />
+            </g>
+        </svg>
+    </div>
 
     <script>
-        const wishes = [
-            "Būk laiminga!", "Daug šypsenų!", "Svajonių išsipildymo!", "Daug nuotykių!", 
-            "Meilės!", "Sėkmės!", "Būk savimi!", "Šilumos!", "Saldžių akimirkų!", 
-            "Energijos!", "Šviesių dienų!", "Įspūdžių!", "Magijos!", "Džiaugsmo!",
-            "Kūrybos!", "Drąsos!", "Saulės!", "Juoko!", "Tikrumo!", "Laisvės!"
-        ];
-
-        const colors = ['#ffb7b2', '#ffdac1', '#e2f0cb', '#b5ead7', '#c7ceea', '#fdfd96'];
+        const wishes = ["Laimės!", "Meilės!", "Šypsenų!", "Sėkmės!", "Nuotykių!", "Svajonių!", "Šviesos!", "Juoko!", "Tikrumo!", "Laisvės!"];
+        const colors = ['#ffb7b2', '#ffdac1', '#e2f0cb', '#b5ead7', '#c7ceea'];
 
         function setupNotes() {
             const container = document.getElementById('notes-container');
-            const shuffledWishes = wishes.sort(() => 0.5 - Math.random());
-            
-            // Išdėstome lapelius kraštuose, kad neuždengtų centro
-            // Pozicijos procentais: [left, top]
-            const positions = [
-                [5, 5], [35, 2], [70, 5],   // Viršus
-                [2, 35], [75, 30],          // Vidurys (šonai)
-                [5, 65], [75, 60],          // Vidurys (šonai žemiau)
-                [10, 85], [40, 88], [70, 82] // Apačia
-            ];
-
-            // Paimame tiek pozicijų, kiek turime, arba max 10 lapelių
-            const count = Math.min(positions.length, 10);
-
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < 8; i++) {
                 const note = document.createElement('div');
                 note.className = 'sticky-note';
-                note.innerText = shuffledWishes[i];
-                
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                note.style.backgroundColor = color;
-                
-                // Nustatome poziciją
-                note.style.left = positions[i][0] + '%';
-                note.style.top = positions[i][1] + '%';
-
-                // Atsitiktinis pasukimas
-                const rot = Math.random() * 20 - 10;
-                note.style.transform = `rotate(${rot}deg)`;
-                
-                // Skirtingas animacijos greitis
-                note.style.animationDuration = (3 + Math.random() * 2) + 's';
-                
+                note.innerText = wishes[i % wishes.length];
+                note.style.backgroundColor = colors[i % colors.length];
+                note.style.left = (Math.random() * 70 + 5) + '%';
+                note.style.top = (Math.random() * 70 + 5) + '%';
+                note.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
                 container.appendChild(note);
+                gsap.to(note, { y: -10, rotation: "+=5", duration: 2 + Math.random(), repeat: -1, yoyo: true, ease: "sine.inOut" });
             }
         }
 
-        // Judėjimas per visą ekraną (atsitrenkiant į sienas)
-        const girl = document.getElementById('girl');
-        
-        // Pradinė pozicija ir greitis
-        let x = Math.random() * (window.innerWidth - 180);
-        let y = Math.random() * (window.innerHeight - 200);
-        let dx = (Math.random() > 0.5 ? 1 : -1) * 2.5; // Greitis X ašimi
-        let dy = (Math.random() > 0.5 ? 1 : -1) * 2.5; // Greitis Y ašimi
+        // --- ANIMATION ENGINE (Skeletal Rig) ---
+        const char = document.getElementById('character-container');
+        const rig = {
+            head: ".head",
+            armL: ".arm-left",
+            armR: ".arm-right",
+            legL: ".leg-left",
+            legR: ".leg-right",
+            torso: ".torso"
+        };
 
-        function animateGirl() {
-            // Atnaujinam poziciją
-            x += dx;
-            y += dy;
+        let currentTimeline = null;
 
-            // Patikrinam ribas (sienas)
-            // Dešinė/Kairė
-            if (x + 180 >= window.innerWidth || x <= 0) {
-                dx = -dx; // Keičiam kryptį
+        function setState(state) {
+            if (currentTimeline) currentTimeline.kill();
+            currentTimeline = gsap.timeline({ repeat: -1 });
+
+            switch(state) {
+                case 'idle': // 1.0s cycle
+                    currentTimeline.to(rig.head, { rotation: 2, duration: 1, ease: "sine.inOut" }, 0)
+                                   .to(rig.torso, { y: 2, duration: 0.5, yoyo: true, repeat: 1 }, 0)
+                                   .to([rig.armL, rig.armR], { rotation: 5, duration: 1, ease: "sine.inOut" }, 0);
+                    break;
+                case 'walk': // 0.8s cycle
+                    currentTimeline.to(rig.legL, { rotation: 30, duration: 0.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 0)
+                                   .to(rig.legR, { rotation: -30, duration: 0.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 0)
+                                   .to(rig.armL, { rotation: -20, duration: 0.4, yoyo: true, repeat: 1 }, 0)
+                                   .to(rig.armR, { rotation: 20, duration: 0.4, yoyo: true, repeat: 1 }, 0)
+                                   .to(rig.torso, { y: -3, duration: 0.2, yoyo: true, repeat: 3 }, 0);
+                    break;
+                case 'run': // 0.4s cycle
+                    currentTimeline.to(rig.legL, { rotation: 50, duration: 0.2, yoyo: true, repeat: 1 }, 0)
+                                   .to(rig.legR, { rotation: -50, duration: 0.2, yoyo: true, repeat: 1 }, 0)
+                                   .to(rig.torso, { rotation: 5, y: -5, duration: 0.1, yoyo: true, repeat: 3 }, 0);
+                    break;
+                case 'jump': // 1.2s cycle
+                    currentTimeline = gsap.timeline();
+                    currentTimeline.to(char, { y: -100, duration: 0.5, ease: "power2.out" })
+                                   .to(rig.legL, { rotation: 70, duration: 0.3 }, 0)
+                                   .to(rig.legR, { rotation: 70, duration: 0.3 }, 0)
+                                   .to(char, { y: 0, duration: 0.5, ease: "bounce.out" })
+                                   .to([rig.legL, rig.legR], { rotation: 0, duration: 0.2 });
+                    break;
             }
-            // Apačia/Viršus
-            if (y + 200 >= window.innerHeight || y <= 0) {
-                dy = -dy; // Keičiam kryptį
-            }
-
-            // Pritaiko stilių
-            girl.style.left = x + 'px';
-            girl.style.top = y + 'px';
-
-            requestAnimationFrame(animateGirl);
         }
 
-        function createConfetti() {
-            const confettiColors = ['#ff7eb9', '#ffea00', '#00e5ff', '#ff6767'];
-            for (let i = 0; i < 25; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
-                confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                confetti.style.opacity = Math.random();
-                confetti.style.top = -10 + 'px';
-                document.body.appendChild(confetti);
+        // --- AI MOVEMENT LOGIC ---
+        let x = 50, y = 50;
+        let targetX = 50, targetY = 50;
+
+        function update() {
+            if (Math.abs(x - targetX) < 1 && Math.abs(y - targetY) < 1) {
+                // Atvyko į tikslą
+                if (Math.random() > 0.7) {
+                    setState('jump');
+                    setTimeout(() => { targetX = Math.random() * 80 + 10; targetY = Math.random() * 80 + 10; }, 1500);
+                } else {
+                    setState('idle');
+                    setTimeout(() => { targetX = Math.random() * 80 + 10; targetY = Math.random() * 80 + 10; }, 2000);
+                }
+            } else {
+                const dist = Math.sqrt(Math.pow(targetX - x, 2) + Math.pow(targetY - y, 2));
+                const speed = dist > 40 ? 0.8 : 0.4;
+                const state = dist > 40 ? 'run' : 'walk';
+                
+                if (currentTimeline && currentTimeline.vars.data !== state) setState(state);
+
+                x += (targetX - x) * (speed / 10);
+                y += (targetY - y) * (speed / 10);
+
+                char.style.left = x + '%';
+                char.style.top = y + '%';
+                char.style.transform = `scaleX(${targetX > x ? 1 : -1})`;
             }
+            requestAnimationFrame(update);
         }
 
         setupNotes();
-        createConfetti();
-        animateGirl();
+        setState('idle');
+        update();
     </script>
 </body>
 </html>
