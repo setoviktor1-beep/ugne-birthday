@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Su gimimo diena, Ugne!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fff0f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Foniniai lapeliai */
+        .background-notes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            padding: 15px;
+            opacity: 0.8;
+        }
+
+        .sticky-note {
+            width: 90px;
+            height: 90px;
+            padding: 8px;
+            font-family: 'Permanent Marker', cursive;
+            font-size: 0.75rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+            position: relative;
+            border-bottom-right-radius: 15px 3px;
+        }
+
+        /* Centrinė žinutė */
+        .center-message {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px 15px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(255, 126, 185, 0.3);
+            width: 85%;
+            max-width: 350px;
+            border: 3px solid #ff7eb9;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #444;
+            text-transform: uppercase;
+        }
+
+        .highlight {
+            color: #ff4081;
+            display: block;
+            font-size: 2.8rem;
+            margin-top: 5px;
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+        }
+
+        /* Anime mergaitė */
+        .anime-girl {
+            position: absolute;
+            bottom: 10px;
+            width: 60px;
+            height: 80px;
+            z-index: 20;
+            animation: walkAcross 12s linear infinite;
+        }
+
+        @keyframes walkAcross {
+            0% { left: -70px; transform: scaleX(1); }
+            45% { transform: scaleX(1); }
+            50% { left: calc(100% + 10px); transform: scaleX(-1); }
+            95% { transform: scaleX(-1); }
+            100% { left: -70px; transform: scaleX(1); }
+        }
+
+        /* Mergaitės detalės (SVG/CSS) */
+        .chibi {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Konfeti */
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            z-index: 5;
+            animation: fall linear infinite;
+            border-radius: 2px;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="notes-container" class="background-notes"></div>
+
+    <div class="center-message">
+        <h1>Su gimimo diena, <span class="highlight">UGNE!</span></h1>
+    </div>
+
+    <!-- Anime Mergaitė (Blondinė, akiniai, fotoaparatas) -->
+    <div class="anime-girl">
+        <svg viewBox="0 0 100 120" class="chibi">
+            <!-- Kūnas -->
+            <rect x="35" y="70" width="30" height="30" fill="#ff7eb9" rx="5" />
+            <!-- Kojos -->
+            <rect x="38" y="95" width="8" height="15" fill="#fbd38d" />
+            <rect x="54" y="95" width="8" height="15" fill="#fbd38d" />
+            <!-- Galva -->
+            <circle cx="50" cy="45" r="35" fill="#fbd38d" />
+            <!-- Plaukai (Blondinė) -->
+            <path d="M15,45 Q15,10 50,10 Q85,10 85,45 L85,55 Q85,65 75,65 L25,65 Q15,65 15,55 Z" fill="#f6e05e" />
+            <path d="M20,35 Q50,15 80,35" fill="none" stroke="#ecc94b" stroke-width="2" />
+            <!-- Akiniai -->
+            <circle cx="35" cy="48" r="10" fill="none" stroke="#333" stroke-width="2" />
+            <circle cx="65" cy="48" r="10" fill="none" stroke="#333" stroke-width="2" />
+            <line x1="45" y1="48" x2="55" y2="48" stroke="#333" stroke-width="2" />
+            <!-- Akys -->
+            <circle cx="35" cy="48" r="2" fill="#333" />
+            <circle cx="65" cy="48" r="2" fill="#333" />
+            <!-- Fotoaparatas -->
+            <rect x="40" y="75" width="20" height="15" fill="#4a5568" rx="2" />
+            <circle cx="50" cy="82.5" r="4" fill="#cbd5e0" stroke="#2d3748" stroke-width="1" />
+            <rect x="53" y="73" width="5" height="3" fill="#2d3748" />
+        </svg>
+    </div>
+
+    <script>
+        const wishes = [
+            "Būk laiminga!", "Daug šypsenų!", "Svajonių išsipildymo!", "Daug nuotykių!", 
+            "Meilės!", "Sėkmės!", "Būk savimi!", "Šilumos!", "Saldžių akimirkų!", 
+            "Energijos!", "Šviesių dienų!", "Įspūdžių!", "Magijos!", "Džiaugsmo!",
+            "Kūrybos!", "Drąsos!", "Saulės!", "Juoko!", "Tikrumo!", "Laisvės!"
+        ];
+
+        const colors = ['#ffb7b2', '#ffdac1', '#e2f0cb', '#b5ead7', '#c7ceea', '#fdfd96'];
+
+        function setupNotes() {
+            const container = document.getElementById('notes-container');
+            const shuffledWishes = wishes.sort(() => 0.5 - Math.random());
+            
+            for (let i = 0; i < 12; i++) {
+                const note = document.createElement('div');
+                note.className = 'sticky-note';
+                note.innerText = shuffledWishes[i];
+                
+                // Atsitiktinė spalva ir pasukimas
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const rotation = (Math.random() * 10 - 5); // nuo -5 iki 5 laipsnių
+                
+                note.style.backgroundColor = color;
+                note.style.transform = `rotate(${rotation}deg)`;
+                
+                container.appendChild(note);
+            }
+        }
+
+        function createConfetti() {
+            const confettiColors = ['#ff7eb9', '#ffea00', '#00e5ff', '#ff6767'];
+            for (let i = 0; i < 20; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = confettiColors[Math.floor(Math.random() * confettiColors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                confetti.style.opacity = Math.random();
+                confetti.style.top = -10 + 'px';
+                document.body.appendChild(confetti);
+            }
+        }
+
+        setupNotes();
+        createConfetti();
+    </script>
+</body>
+</html>
