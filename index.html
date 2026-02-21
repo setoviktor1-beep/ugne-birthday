@@ -81,6 +81,15 @@
             display: block;
             filter: drop-shadow(0 12px 10px rgba(80, 38, 54, 0.24));
         }
+
+        #walker-fallback {
+            width: 100%;
+            height: 100%;
+            display: none;
+            object-fit: contain;
+            filter: drop-shadow(0 12px 10px rgba(80, 38, 54, 0.24));
+            transform-origin: 50% 90%;
+        }
     </style>
 </head>
 <body>
@@ -92,6 +101,7 @@
 
     <div id="walker" aria-hidden="true">
         <canvas id="walker-canvas"></canvas>
+        <img id="walker-fallback" src="girl.png" alt="">
     </div>
 
     <script>
@@ -132,19 +142,58 @@
         }
 
         const walker = document.getElementById("walker");
+        const walkerCanvas = document.getElementById("walker-canvas");
+        const walkerFallback = document.getElementById("walker-fallback");
         let direction = 1;
         let travelTween = null;
         let threeRig = null;
 
+        function showFallbackWalker() {
+            walkerCanvas.style.display = "none";
+            walkerFallback.style.display = "block";
+            gsap.to(walkerFallback, {
+                y: -6,
+                duration: 0.34,
+                yoyo: true,
+                repeat: -1,
+                ease: "sine.inOut"
+            });
+            gsap.to(walkerFallback, {
+                rotation: 1.2,
+                duration: 0.65,
+                yoyo: true,
+                repeat: -1,
+                ease: "sine.inOut"
+            });
+        }
+
         function setup3DWalker() {
-            const canvas = document.getElementById("walker-canvas");
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            if (!window.THREE) {
+                showFallbackWalker();
+                return;
+            }
+
+            let renderer;
+            try {
+                renderer = new THREE.WebGLRenderer({
+                    canvas: walkerCanvas,
+                    alpha: true,
+                    antialias: true,
+                    powerPreference: "high-performance"
+                });
+            } catch (error) {
+                showFallbackWalker();
+                return;
+            }
+
             renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
             renderer.outputColorSpace = THREE.SRGBColorSpace;
+            renderer.setClearColor(0x000000, 0);
 
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 30);
             camera.position.set(0, 1.82, 5.8);
+            camera.lookAt(0, 1.45, 0);
 
             const hemiLight = new THREE.HemisphereLight(0xfff4ec, 0xffc6de, 1.12);
             const keyLight = new THREE.DirectionalLight(0xffffff, 1.35);
